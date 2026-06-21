@@ -1,926 +1,683 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Embed gag.gg — Display Methods</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gag.gg Farm Setup Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #08090c;
+            --panel-glass: rgba(17, 20, 28, 0.75);
+            --border-glow: rgba(0, 242, 254, 0.15);
+            --neon-blue: #00f2fe;
+            --neon-purple: #4facfe;
+            --text-bright: #f1f5f9;
+            --text-dim: #64748b;
+            --code-block-bg: #090d16;
+        }
 
-    :root {
-      --bg:        #0d0f14;
-      --surface:   #14171f;
-      --panel:     #1b1f2b;
-      --border:    #252936;
-      --accent:    #7c6af7;
-      --accent2:   #4fc3f7;
-      --warn:      #f97316;
-      --text:      #e2e4ef;
-      --muted:     #6b7394;
-      --code-bg:   #10121a;
-      --success:   #34d399;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 0% 0%, rgba(79, 172, 254, 0.08) 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, rgba(0, 242, 254, 0.05) 0%, transparent 50%);
+            color: var(--text-bright);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-    html { scroll-behavior: smooth; }
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
+        header {
+            margin-bottom: 35px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 20px;
+        }
 
-    /* ── HEADER ── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      height: 56px;
-      position: sticky;
-      top: 0;
-      background: rgba(13,15,20,0.92);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-    }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            background: linear-gradient(135deg, #fff 30%, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--accent);
-      letter-spacing: -0.3px;
-    }
+        .header-desc {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
 
-    .logo span { color: var(--muted); }
+        /* Setup Guides Area */
+        .setup-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 35px;
+        }
 
-    .header-url {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 12px;
-    }
+        .setup-card {
+            background: var(--panel-glass);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
 
-    .header-url strong { color: var(--accent2); }
+        .setup-card h3 {
+            margin-top: 0;
+            color: #fff;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    nav {
-      margin-left: auto;
-      display: flex;
-      gap: 4px;
-    }
+        .setup-card h3::before {
+            content: '';
+            width: 3px;
+            height: 15px;
+            background: var(--neon-purple);
+            display: inline-block;
+            border-radius: 2px;
+        }
 
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 13px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: color .15s, background .15s;
-    }
+        .setup-card ol {
+            margin: 0;
+            padding-left: 18px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
 
-    nav a:hover { color: var(--text); background: var(--panel); }
+        .setup-card li {
+            margin-bottom: 8px;
+        }
 
-    /* ── HERO ── */
-    .hero {
-      padding: 64px 32px 48px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
+        /* Layout Main Workspace */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
 
-    .hero-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
+        @media (max-width: 900px) {
+            .main-layout, .setup-row {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .hero h1 {
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 600;
-      letter-spacing: -1px;
-      line-height: 1.15;
-      color: #fff;
-      margin-bottom: 18px;
-    }
+        /* Navigation List */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .hero h1 em {
-      font-style: normal;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            color: var(--text-dim);
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-    .hero p {
-      color: var(--muted);
-      font-size: 16px;
-      max-width: 560px;
-      margin-bottom: 32px;
-    }
+        .nav-btn:hover {
+            background: rgba(0, 242, 254, 0.05);
+            color: #fff;
+            border-color: rgba(0, 242, 254, 0.2);
+        }
 
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(0, 242, 254, 0.15));
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        }
 
-    .pill {
-      font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 5px 12px;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      cursor: pointer;
-      transition: all .15s;
-      text-decoration: none;
-    }
+        .nav-btn .btn-meta {
+            font-size: 0.75rem;
+            font-weight: normal;
+            opacity: 0.7;
+        }
 
-    .pill:hover { border-color: var(--accent); color: var(--accent); }
+        /* Display Content Workspace */
+        .workspace {
+            background: var(--panel-glass);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-height: 400px;
+        }
 
-    /* ── METHODS GRID ── */
-    .methods {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 32px 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
+        .workspace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
 
-    .method-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: border-color .2s;
-    }
+        .script-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
 
-    .method-card:hover { border-color: #353a50; }
+        .script-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin: 0;
+        }
 
-    .method-header {
-      padding: 24px 28px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-    }
+        .copy-trigger {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
 
-    .method-number {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--accent);
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.25);
-      border-radius: 6px;
-      padding: 3px 8px;
-      white-space: nowrap;
-      margin-top: 2px;
-    }
+        .copy-trigger:hover {
+            opacity: 0.9;
+        }
 
-    .method-meta h2 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 6px;
-    }
+        .code-view {
+            position: relative;
+            background: var(--code-block-bg);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    .method-meta p { color: var(--muted); font-size: 14px; }
-
-    .badge-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    .badge-green  { background: rgba(52,211,153,.12); color: var(--success); }
-    .badge-yellow { background: rgba(249,115,22,.12);  color: var(--warn); }
-    .badge-blue   { background: rgba(79,195,247,.12);  color: var(--accent2); }
-    .badge-red    { background: rgba(239,68,68,.12);   color: #f87171; }
-
-    /* ── TABS ── */
-    .tab-bar {
-      display: flex;
-      gap: 0;
-      padding: 0 28px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tab-btn {
-      font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 10px 16px;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: color .15s, border-color .15s;
-    }
-
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    /* ── CODE BLOCK ── */
-    .code-pane {
-      display: none;
-      padding: 0;
-    }
-
-    .code-pane.active { display: block; }
-
-    .code-wrap {
-      position: relative;
-    }
-
-    pre {
-      background: var(--code-bg);
-      padding: 22px 28px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 1.65;
-      tab-size: 2;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      padding: 4px 10px;
-      border-radius: 5px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--muted);
-      cursor: pointer;
-      transition: all .15s;
-    }
-
-    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .copy-btn.copied { border-color: var(--success); color: var(--success); }
-
-    /* ── SYNTAX COLORS ── */
-    .kw  { color: #c792ea; }
-    .tag { color: #89ddff; }
-    .atr { color: #80cbc4; }
-    .str { color: #c3e88d; }
-    .cmt { color: #546e7a; font-style: italic; }
-    .fn  { color: #82aaff; }
-    .num { color: #f78c6c; }
-
-    /* ── LIVE PREVIEW ── */
-    .preview-pane {
-      padding: 24px 28px;
-      border-top: 1px solid var(--border);
-      background: var(--panel);
-    }
-
-    .preview-label {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .preview-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .preview-frame-wrap {
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: #fff;
-      position: relative;
-    }
-
-    .browser-chrome {
-      background: #1e2130;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-r { background: #ff5f57; }
-    .dot-y { background: #febc2e; }
-    .dot-g { background: #28c840; }
-
-    .url-bar {
-      flex: 1;
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--muted);
-    }
-
-    .preview-note {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .preview-note svg { flex-shrink: 0; }
-
-    .iframe-container {
-      width: 100%;
-      height: 340px;
-    }
-
-    .iframe-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    /* ── WARNING CARD ── */
-    .warn-box {
-      margin: 16px 28px 20px;
-      background: rgba(249,115,22,.08);
-      border: 1px solid rgba(249,115,22,.2);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #fba663;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    /* ── COMPARE TABLE ── */
-    .comparison {
-      max-width: 900px;
-      margin: 0 auto 80px;
-      padding: 0 32px;
-    }
-
-    .section-title {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    th {
-      text-align: left;
-      font-weight: 500;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-
-    tr:last-child td { border-bottom: none; }
-
-    tr:hover td { background: rgba(255,255,255,.02); }
-
-    td:first-child { font-family: 'JetBrains Mono', monospace; color: var(--accent2); font-size: 13px; }
-
-    .check { color: var(--success); }
-    .cross { color: #f87171; }
-    .partial { color: var(--warn); }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      text-align: center;
-      padding: 28px 32px;
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    footer a { color: var(--accent); text-decoration: none; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      header { padding: 0 16px; }
-      .header-url { display: none; }
-      .hero, .methods, .comparison { padding-left: 16px; padding-right: 16px; }
-      .method-header { padding: 18px 18px 16px; }
-      pre { padding: 18px; }
-      .tab-bar { padding: 0 12px; }
-      .preview-pane { padding: 16px 16px 20px; }
-      .warn-box { margin: 12px 16px 14px; }
-    }
-  </style>
+        pre {
+            margin: 0;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'SFMono-Regular', Consolas, Monaco, monospace;
+            font-size: 0.88rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
-<header>
-  <div class="logo">embed<span>.</span>guide</div>
-  <div class="header-url">target: <strong>https://gag.gg</strong></div>
-  <nav>
-    <a href="#methods">Methods</a>
-    <a href="#compare">Compare</a>
-  </nav>
-</header>
+<div class="dashboard-container">
+    <header>
+        <h1>Seed Pack Farm Deployment Terminal</h1>
+        <div class="header-desc">Management dashboard for automated loop optimization tools on gag.gg</div>
+    </header>
 
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-eyebrow">// Display Methods Reference</div>
-  <h1>Embed <em>gag.gg</em><br>on your page</h1>
-  <p>Six techniques for displaying an external URL inline — from dead-simple HTML to proxy-based workarounds — with code samples and live previews.</p>
-  <div class="pill-row">
-    <a class="pill" href="#m1">&lt;iframe&gt;</a>
-    <a class="pill" href="#m2">JS fetch + proxy</a>
-    <a class="pill" href="#m3">window.open</a>
-    <a class="pill" href="#m4">window.location</a>
-    <a class="pill" href="#m5">&lt;object&gt;</a>
-    <a class="pill" href="#m6">&lt;embed&gt;</a>
-  </div>
-</section>
-
-<!-- ── METHODS ── -->
-<div class="methods" id="methods">
-
-  <!-- METHOD 1: iframe -->
-  <div class="method-card" id="m1">
-    <div class="method-header">
-      <div class="method-number">01</div>
-      <div class="method-meta">
-        <h2>&lt;iframe&gt; — Inline Frame</h2>
-        <p>The native HTML element for embedding another webpage inside yours. The browser renders the target URL in a sandboxed viewport.</p>
-        <div class="badge-row">
-          <span class="badge badge-green">✓ Native HTML</span>
-          <span class="badge badge-green">✓ Sandboxed</span>
-          <span class="badge badge-yellow">⚠ Blocked by X-Frame-Options</span>
+    <div class="setup-row">
+        <div class="setup-card">
+            <h3>Safari Mobile (Stay Deployment)</h3>
+            <ol>
+                <li>Launch Safari, enter your <strong>Stay Extension Panel</strong> Dashboard.</li>
+                <li>Tap the <strong>+</strong> icon, select <strong>Create New Script</strong>.</li>
+                <li>Select your chosen module component below, copy it, and save the code payload inside Stay.</li>
+            </ol>
         </div>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t1')">HTML</button>
-      <button class="tab-btn" onclick="switchTab(this,'t1','css')">CSS resize</button>
-    </div>
-    <div class="code-pane active" id="t1-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">&lt;!-- Basic iframe embed --&gt;</span>
-<span class="tag">&lt;iframe</span>
-  <span class="atr">src</span>=<span class="str">"https://gag.gg"</span>
-  <span class="atr">width</span>=<span class="str">"100%"</span>
-  <span class="atr">height</span>=<span class="str">"600"</span>
-  <span class="atr">frameborder</span>=<span class="str">"0"</span>
-  <span class="atr">loading</span>=<span class="str">"lazy"</span>
-  <span class="atr">title</span>=<span class="str">"gag.gg"</span>
-  <span class="atr">allow</span>=<span class="str">"fullscreen"</span>
-  <span class="atr">sandbox</span>=<span class="str">"allow-scripts allow-same-origin allow-forms allow-popups"</span>
-<span class="tag">&gt;&lt;/iframe&gt;</span></pre>
-      </div>
-    </div>
-    <div class="code-pane" id="t1-css">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">/* Responsive iframe with 16:9 ratio */</span>
-<span class="fn">.iframe-wrapper</span> {
-  <span class="atr">position</span>: <span class="str">relative</span>;
-  <span class="atr">width</span>: <span class="str">100%</span>;
-  <span class="atr">padding-bottom</span>: <span class="str">56.25%</span>; <span class="cmt">/* 16:9 */</span>
-  <span class="atr">height</span>: <span class="num">0</span>;
-  <span class="atr">overflow</span>: <span class="str">hidden</span>;
-}
-
-<span class="fn">.iframe-wrapper iframe</span> {
-  <span class="atr">position</span>: <span class="str">absolute</span>;
-  <span class="atr">top</span>: <span class="num">0</span>; <span class="atr">left</span>: <span class="num">0</span>;
-  <span class="atr">width</span>: <span class="str">100%</span>;
-  <span class="atr">height</span>: <span class="str">100%</span>;
-  <span class="atr">border</span>: <span class="str">none</span>;
-}</pre>
-      </div>
-    </div>
-    <div class="preview-pane">
-      <div class="preview-label">live preview</div>
-      <div class="preview-frame-wrap">
-        <div class="browser-chrome">
-          <div class="dot dot-r"></div>
-          <div class="dot dot-y"></div>
-          <div class="dot dot-g"></div>
-          <div class="url-bar">https://gag.gg</div>
+        <div class="setup-card">
+            <h3>Desktop Browser (Tampermonkey Deployment)</h3>
+            <ol>
+                <li>Click your browser's <strong>Tampermonkey Engine icon</strong> and open the control dashboard.</li>
+                <li>Select the <strong>Add Script (+)</strong> file tab icon.</li>
+                <li>Paste down your copied target configuration module from below and press <code>Ctrl + S</code> to save.</li>
+            </ol>
         </div>
-        <div class="iframe-container">
-          <iframe src="https://gag.gg" title="gag.gg preview" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    </div>
+
+    <div class="main-layout">
+        <div class="sidebar-nav">
+            <button class="nav-btn active" onclick="loadScript(0, this)">
+                <span>1. Speed Up Swipes</span>
+                <span class="btn-meta">Speeds up animations 6.5x</span>
+            </button>
+            <button class="nav-btn" onclick="loadScript(1, this)">
+                <span>2. Lucky Swipe Counter</span>
+                <span class="btn-meta">Tracks jackpot hits via Glass UI</span>
+            </button>
+            <button class="nav-btn" onclick="loadScript(2, this)">
+                <span>3. Auto Vote Clicker</span>
+                <span class="btn-meta">Continuous matching loops</span>
+            </button>
+            <button class="nav-btn" onclick="loadScript(3, this)">
+                <span>4. Auto Login Engine</span>
+                <span class="btn-meta">Automated entry sequence</span>
+            </button>
+            <button class="nav-btn" onclick="loadScript(4, this)">
+                <span>5. Auto Data Reset</span>
+                <span class="btn-meta">Clears limits & restarts cycle</span>
+            </button>
         </div>
-      </div>
-      <p class="preview-note">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
-        If the frame appears blank, the site sends <code>X-Frame-Options: DENY</code> or <code>Content-Security-Policy: frame-ancestors 'none'</code>, which instructs browsers to block iframe embedding.
-      </p>
-    </div>
-  </div>
 
-  <!-- METHOD 2: Fetch + Proxy -->
-  <div class="method-card" id="m2">
-    <div class="method-header">
-      <div class="method-number">02</div>
-      <div class="method-meta">
-        <h2>Fetch via Server Proxy</h2>
-        <p>Route the request through your own server to bypass X-Frame-Options and CORS. Your backend fetches the HTML, strips/rewrites asset URLs, and serves it to your front end.</p>
-        <div class="badge-row">
-          <span class="badge badge-green">✓ Bypasses X-Frame-Options</span>
-          <span class="badge badge-yellow">⚠ Requires server</span>
-          <span class="badge badge-red">✗ TOS risk</span>
+        <div class="workspace">
+            <div class="workspace-header">
+                <div>
+                    <h2 class="script-title" id="scriptTitle">Speed Up Swipes</h2>
+                    <p class="script-desc" id="scriptDesc">Accelerates internal runtime loops, interval thresholds, and CSS transform-transition animations by a factor of 6.5x.</p>
+                </div>
+                <button class="copy-trigger" onclick="copyCurrentScript()">Copy Script Code</button>
+            </div>
+            <div class="code-view">
+                <pre><code id="codeDisplay">Loading module script...</code></pre>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t2')">Node.js proxy</button>
-      <button class="tab-btn" onclick="switchTab(this,'t2','client')">Client fetch</button>
-    </div>
-    <div class="code-pane active" id="t2-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">// Express.js reverse proxy — server.js</span>
-<span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
-<span class="kw">const</span> { <span class="fn">createProxyMiddleware</span> } = <span class="fn">require</span>(<span class="str">'http-proxy-middleware'</span>);
-
-<span class="kw">const</span> app = <span class="fn">express</span>();
-
-app.<span class="fn">use</span>(<span class="str">'/proxy'</span>, <span class="fn">createProxyMiddleware</span>({
-  <span class="atr">target</span>: <span class="str">'https://gag.gg'</span>,
-  <span class="atr">changeOrigin</span>: <span class="kw">true</span>,
-  <span class="atr">pathRewrite</span>: { <span class="str">'^/proxy'</span>: <span class="str">''</span> },
-  <span class="fn">on</span>: {
-    <span class="fn">proxyRes</span>(proxyRes) {
-      <span class="cmt">// Strip framing-prevention headers</span>
-      <span class="kw">delete</span> proxyRes.headers[<span class="str">'x-frame-options'</span>];
-      <span class="kw">delete</span> proxyRes.headers[<span class="str">'content-security-policy'</span>];
-    }
-  }
-}));
-
-app.<span class="fn">listen</span>(<span class="num">3000</span>);</pre>
-      </div>
-    </div>
-    <div class="code-pane" id="t2-client">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">// Client-side: load proxy URL into iframe</span>
-<span class="kw">const</span> frame = document.<span class="fn">createElement</span>(<span class="str">'iframe'</span>);
-frame.src = <span class="str">'/proxy/'</span>; <span class="cmt">// hits your local proxy</span>
-frame.style.width  = <span class="str">'100%'</span>;
-frame.style.height = <span class="str">'600px'</span>;
-frame.style.border = <span class="str">'none'</span>;
-
-document.<span class="fn">getElementById</span>(<span class="str">'container'</span>).<span class="fn">appendChild</span>(frame);</pre>
-      </div>
-    </div>
-    <div class="warn-box">
-      ⚠️ Proxying a third-party website without permission may violate their Terms of Service and applicable law. Use only for sites you own or have authorisation for.
-    </div>
-  </div>
-
-  <!-- METHOD 3: window.open -->
-  <div class="method-card" id="m3">
-    <div class="method-header">
-      <div class="method-number">03</div>
-      <div class="method-meta">
-        <h2>window.open() — Popup / New Tab</h2>
-        <p>Launch the URL in a controlled browser window. You can size and position it like a modal. Not technically "on the page", but creates the appearance of an inline experience.</p>
-        <div class="badge-row">
-          <span class="badge badge-green">✓ Always works</span>
-          <span class="badge badge-yellow">⚠ Blocked by popup blockers</span>
-          <span class="badge badge-blue">→ New window</span>
-        </div>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t3')">JavaScript</button>
-    </div>
-    <div class="code-pane active" id="t3-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">/**
- * Opens gag.gg in a centred popup window.
- * Must be called from a user-gesture (click, keydown)
- * to avoid popup blockers.
- */</span>
-<span class="kw">function</span> <span class="fn">openGagGG</span>() {
-  <span class="kw">const</span> w = <span class="num">1024</span>, h = <span class="num">768</span>;
-  <span class="kw">const</span> left = (screen.width  - w) / <span class="num">2</span>;
-  <span class="kw">const</span> top  = (screen.height - h) / <span class="num">2</span>;
-
-  window.<span class="fn">open</span>(
-    <span class="str">'https://gag.gg'</span>,
-    <span class="str">'gag_window'</span>,
-    <span class="str">`width=<span class="num">${w}</span>,height=<span class="num">${h}</span>,left=<span class="num">${left}</span>,top=<span class="num">${top}</span>,`</span> +
-    <span class="str">'toolbar=no,menubar=no,scrollbars=yes,resizable=yes'</span>
-  );
-}
-
-<span class="cmt">// Bind to a button</span>
-document
-  .<span class="fn">getElementById</span>(<span class="str">'open-btn'</span>)
-  .<span class="fn">addEventListener</span>(<span class="str">'click'</span>, openGagGG);</pre>
-      </div>
-    </div>
-    <div class="preview-pane">
-      <div class="preview-label">demo</div>
-      <button onclick="window.open('https://gag.gg','gag','width=1024,height=768,left='+(screen.width-1024)/2+',top='+(screen.height-768)/2+',toolbar=no,menubar=no,scrollbars=yes')" style="font-family:'Inter',sans-serif;background:linear-gradient(135deg,#7c6af7,#4fc3f7);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-        ↗ Open gag.gg in popup
-      </button>
-    </div>
-  </div>
-
-  <!-- METHOD 4: window.location -->
-  <div class="method-card" id="m4">
-    <div class="method-header">
-      <div class="method-number">04</div>
-      <div class="method-meta">
-        <h2>window.location / &lt;a&gt; redirect</h2>
-        <p>Navigate the current tab to the URL — either via a JavaScript redirect or a plain anchor tag. Simplest method; fully replaces your page.</p>
-        <div class="badge-row">
-          <span class="badge badge-green">✓ Zero restrictions</span>
-          <span class="badge badge-red">✗ Leaves your page</span>
-        </div>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t4')">JS redirect</button>
-      <button class="tab-btn" onclick="switchTab(this,'t4','html')">HTML link</button>
-      <button class="tab-btn" onclick="switchTab(this,'t4','meta')">Meta refresh</button>
-    </div>
-    <div class="code-pane active" id="t4-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">// Hard redirect — replaces browser history entry</span>
-window.location.<span class="fn">replace</span>(<span class="str">'https://gag.gg'</span>);
-
-<span class="cmt">// Soft redirect — adds history entry (back button works)</span>
-window.location.href = <span class="str">'https://gag.gg'</span>;
-
-<span class="cmt">// Delayed redirect (e.g. after 3 seconds)</span>
-<span class="fn">setTimeout</span>(() => {
-  window.location.href = <span class="str">'https://gag.gg'</span>;
-}, <span class="num">3000</span>);</pre>
-      </div>
-    </div>
-    <div class="code-pane" id="t4-html-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">&lt;!-- Opens in same tab --&gt;</span>
-<span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="str">"https://gag.gg"</span><span class="tag">&gt;</span>Go to gag.gg<span class="tag">&lt;/a&gt;</span>
-
-<span class="cmt">&lt;!-- Opens in new tab --&gt;</span>
-<span class="tag">&lt;a</span>
-  <span class="atr">href</span>=<span class="str">"https://gag.gg"</span>
-  <span class="atr">target</span>=<span class="str">"_blank"</span>
-  <span class="atr">rel</span>=<span class="str">"noopener noreferrer"</span>
-<span class="tag">&gt;</span>Open gag.gg in new tab<span class="tag">&lt;/a&gt;</span></pre>
-      </div>
-    </div>
-    <div class="code-pane" id="t4-meta-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">&lt;!-- Auto-redirect after 5 seconds (in &lt;head&gt;) --&gt;</span>
-<span class="tag">&lt;meta</span>
-  <span class="atr">http-equiv</span>=<span class="str">"refresh"</span>
-  <span class="atr">content</span>=<span class="str">"5; url=https://gag.gg"</span>
-<span class="tag">/&gt;</span>
-
-<span class="cmt">&lt;!-- Instant redirect --&gt;</span>
-<span class="tag">&lt;meta</span>
-  <span class="atr">http-equiv</span>=<span class="str">"refresh"</span>
-  <span class="atr">content</span>=<span class="str">"0; url=https://gag.gg"</span>
-<span class="tag">/&gt;</span></pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- METHOD 5: <object> -->
-  <div class="method-card" id="m5">
-    <div class="method-header">
-      <div class="method-number">05</div>
-      <div class="method-meta">
-        <h2>&lt;object&gt; Element</h2>
-        <p>An older HTML element that can embed external resources including web pages. Browsers treat it similarly to an iframe — same X-Frame-Options restrictions apply.</p>
-        <div class="badge-row">
-          <span class="badge badge-blue">↔ Like iframe</span>
-          <span class="badge badge-yellow">⚠ Same frame restrictions</span>
-          <span class="badge badge-yellow">⚠ Limited browser support</span>
-        </div>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t5')">HTML</button>
-    </div>
-    <div class="code-pane active" id="t5-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="tag">&lt;object</span>
-  <span class="atr">data</span>=<span class="str">"https://gag.gg"</span>
-  <span class="atr">type</span>=<span class="str">"text/html"</span>
-  <span class="atr">width</span>=<span class="str">"100%"</span>
-  <span class="atr">height</span>=<span class="str">"600"</span>
-  <span class="atr">style</span>=<span class="str">"border:none;"</span>
-<span class="tag">&gt;</span>
-  <span class="cmt">&lt;!-- Fallback if object is not supported --&gt;</span>
-  <span class="tag">&lt;a</span> <span class="atr">href</span>=<span class="str">"https://gag.gg"</span><span class="tag">&gt;</span>Visit gag.gg<span class="tag">&lt;/a&gt;</span>
-<span class="tag">&lt;/object&gt;</span></pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- METHOD 6: <embed> -->
-  <div class="method-card" id="m6">
-    <div class="method-header">
-      <div class="method-number">06</div>
-      <div class="method-meta">
-        <h2>&lt;embed&gt; Element</h2>
-        <p>A void HTML element primarily for plugins (Flash, PDF). Modern browsers may load HTML URLs in it, though behaviour is inconsistent and largely unsupported for web pages.</p>
-        <div class="badge-row">
-          <span class="badge badge-red">✗ Not reliable for HTML</span>
-          <span class="badge badge-blue">→ Best for PDFs</span>
-        </div>
-      </div>
-    </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab(this,'t6')">HTML</button>
-    </div>
-    <div class="code-pane active" id="t6-html">
-      <div class="code-wrap">
-        <button class="copy-btn" onclick="copyCode(this)">copy</button>
-        <pre><span class="cmt">&lt;!-- Note: &lt;embed&gt; is unreliable for embedding web pages.
-     Prefer &lt;iframe&gt; for HTML and &lt;embed&gt; for PDFs only. --&gt;</span>
-
-<span class="tag">&lt;embed</span>
-  <span class="atr">src</span>=<span class="str">"https://gag.gg"</span>
-  <span class="atr">type</span>=<span class="str">"text/html"</span>
-  <span class="atr">width</span>=<span class="str">"100%"</span>
-  <span class="atr">height</span>=<span class="str">"600"</span>
-<span class="tag">/&gt;</span>
-
-<span class="cmt">&lt;!-- Works well for PDFs --&gt;</span>
-<span class="tag">&lt;embed</span>
-  <span class="atr">src</span>=<span class="str">"https://example.com/doc.pdf"</span>
-  <span class="atr">type</span>=<span class="str">"application/pdf"</span>
-  <span class="atr">width</span>=<span class="str">"100%"</span>
-  <span class="atr">height</span>=<span class="str">"600"</span>
-<span class="tag">/&gt;</span></pre>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /.methods -->
-
-<!-- ── COMPARISON TABLE ── -->
-<section class="comparison" id="compare">
-  <div class="section-title">// method comparison</div>
-  <div style="overflow-x:auto; background:var(--surface); border:1px solid var(--border); border-radius:12px;">
-    <table>
-      <thead>
-        <tr>
-          <th>Method</th>
-          <th>Works inline</th>
-          <th>Bypasses X-Frame</th>
-          <th>Needs server</th>
-          <th>Browser support</th>
-          <th>Recommended</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>&lt;iframe&gt;</td>
-          <td class="check">✓</td>
-          <td class="cross">✗</td>
-          <td class="check">No</td>
-          <td>All</td>
-          <td class="check">✓ First choice</td>
-        </tr>
-        <tr>
-          <td>Fetch proxy</td>
-          <td class="check">✓</td>
-          <td class="check">✓</td>
-          <td class="cross">Yes</td>
-          <td>All</td>
-          <td class="partial">⚠ If allowed</td>
-        </tr>
-        <tr>
-          <td>window.open</td>
-          <td class="cross">✗ (popup)</td>
-          <td class="check">✓</td>
-          <td class="check">No</td>
-          <td>All</td>
-          <td class="partial">⚠ Popup blockers</td>
-        </tr>
-        <tr>
-          <td>window.location</td>
-          <td class="cross">✗ (redirect)</td>
-          <td class="check">✓</td>
-          <td class="check">No</td>
-          <td>All</td>
-          <td class="partial">⚠ Leaves page</td>
-        </tr>
-        <tr>
-          <td>&lt;object&gt;</td>
-          <td class="check">✓</td>
-          <td class="cross">✗</td>
-          <td class="check">No</td>
-          <td>Most</td>
-          <td class="cross">✗ Use iframe</td>
-        </tr>
-        <tr>
-          <td>&lt;embed&gt;</td>
-          <td class="partial">~</td>
-          <td class="cross">✗</td>
-          <td class="check">No</td>
-          <td>Inconsistent</td>
-          <td class="cross">✗ Not for HTML</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<footer>
-  embed.guide — a display methods reference for
-  <a href="https://gag.gg" target="_blank" rel="noopener">https://gag.gg</a>
-</footer>
+</div>
 
 <script>
-  // ── TAB SWITCHING ──
-  function switchTab(btn, groupId, subId) {
-    const card = btn.closest('.method-card');
+    // Embedded Storage Matrix representing user script collection files
+    const scriptsDatabase = [
+        {
+            title: "1. Speed Up Swipes",
+            desc: "Accelerates internal runtime loops, interval thresholds, and CSS transform-transition animations by a factor of 6.5x.",
+            code: `// ==UserScript==
+// @name         10x Speed
+// @namespace    http://tampermonkey.net/
+// @version      7.0
+// @description  Speeds up cooldowns and timers by 10x, after a 1 second delay
+// @author       Claude
+// @match        *://gag.gg/vote*
+// @grant        none
+// @run-at       document-start
+// ==/UserScript==
 
-    // Deactivate all tab buttons in this card
-    card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+(function () {
+  'use strict';
 
-    // Hide all panes in this card
-    card.querySelectorAll('.code-pane').forEach(p => p.classList.remove('active'));
+  const FACTOR = 6.5;
 
-    // Determine pane ID
-    const paneId = subId ? `${groupId}-${subId}-html` : `${groupId}-html`;
-    const target = document.getElementById(paneId) || card.querySelectorAll('.code-pane')[0];
-    if (target) target.classList.add('active');
-  }
+  setTimeout(() => {
 
-  // ── COPY CODE ──
-  function copyCode(btn) {
-    const pre = btn.closest('.code-wrap').querySelector('pre');
-    const text = pre.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'copied!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'copy';
-        btn.classList.remove('copied');
-      }, 1800);
+    // ── 1. TIMERS ───────────────────────────────────────────────────────────
+
+    const _setTimeout  = window.setTimeout.bind(window);
+    const _setInterval = window.setInterval.bind(window);
+
+    window.setTimeout  = (fn, delay, ...a) => _setTimeout(fn,  (delay || 0) / FACTOR, ...a);
+    window.setInterval = (fn, delay, ...a) => _setInterval(fn, (delay || 0) / FACTOR, ...a);
+
+    // ── 2. rAF ──────────────────────────────────────────────────────────────
+
+    const _raf     = window.requestAnimationFrame.bind(window);
+    const realPerf = performance.now.bind(performance);
+    const origin   = realPerf();
+
+    window.requestAnimationFrame = (cb) =>
+      _raf((realTs) => cb(origin + (realTs - origin) * FACTOR));
+
+    // ── 3. CSS ──────────────────────────────────────────────────────────────
+
+    const style = document.createElement('style');
+    style.textContent = \`*, *::before, *::after {
+      animation-duration:  calc(var(--d,  1s)   / \${FACTOR}) !important;
+      animation-delay:     calc(var(--ad, 0s)   / \${FACTOR}) !important;
+      transition-duration: calc(var(--td, 0.3s) / \${FACTOR}) !important;
+      transition-delay:    calc(var(--tdd, 0s)  / \${FACTOR}) !important;
+    }\`;
+    document.head.appendChild(style);
+
+  }, 1000);
+
+})();`
+        },
+        {
+            title: "2. Lucky Swipe Counter",
+            desc: "Tracks page layout nodes for jackpot drops, updating a floating glass HUD element and updating tracking flags continuously.",
+            code: `// ==UserScript==
+// @name         Lucky Swipes Counter (Grow a Garden 2)
+// @namespace    http://tampermonkey.net/
+// @version      1.3
+// @description  Counts and saves \"LUCKY SWIPES\" using the site's native jackpot system data structure.
+// @author       YourName
+// @match        *://gag.gg/*
+// @match        *://*.gag.gg/*
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @run-at       document-end
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    let luckyCount = GM_getValue("luckySwipesCount", 0);
+
+    const glassUI = document.createElement('div');
+    glassUI.id = 'lucky-swipes-ui';
+    glassUI.innerHTML = \`LUCKY SWIPES | x<span id=\"lucky-counter-num\">\${luckyCount}</span>\`;
+
+    const style = document.createElement('style');
+    style.innerHTML = \`
+        #lucky-swipes-ui {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999999;
+            padding: 12px 24px;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .pulse-animation {
+            transform: scale(1.15);
+            background: rgba(255, 255, 255, 0.3) !important;
+        }
+    \`;
+
+    document.head.appendChild(style);
+    document.body.appendChild(glassUI);
+
+    const counterSpan = document.getElementById('lucky-counter-num');
+
+    function incrementCounter() {
+        luckyCount++;
+        GM_setValue("luckySwipesCount", luckyCount);
+        counterSpan.innerText = luckyCount;
+
+        glassUI.classList.add('pulse-animation');
+        setTimeout(() => {
+            glassUI.classList.remove('pulse-animation');
+        }, 250);
+    }
+
+    const observer = new MutationObserver((mutations) => {
+        for (let mutation of mutations) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'hidden') {
+                const target = mutation.target;
+                if (target.hasAttribute('data-jackpot') && !target.hasAttribute('hidden')) {
+                    if (!target.hasAttribute('data-ui-counted')) {
+                        target.setAttribute('data-ui-counted', 'true');
+                        incrementCounter();
+                    }
+                } 
+                else if (target.hasAttribute('data-jackpot') && target.hasAttribute('hidden')) {
+                    target.removeAttribute('data-ui-counted');
+                }
+            }
+        }
     });
-  }
+
+    const jackpotContainer = document.querySelector('[data-jackpot]');
+    if (jackpotContainer) {
+        observer.observe(jackpotContainer, {
+            attributes: true,
+            attributeFilter: ['hidden']
+        });
+    } else {
+        const bodyObserver = new MutationObserver(() => {
+            const container = document.querySelector('[data-jackpot]');
+            if (container) {
+                observer.observe(container, {
+                    attributes: true,
+                    attributeFilter: ['hidden']
+                });
+                bodyObserver.disconnect();
+            }
+        });
+        bodyObserver.observe(document.body, { childList: true, subtree: true });
+    }
+})();`
+        },
+        {
+            title: "3. Auto Vote Clicker",
+            desc: "Triggers sequential mousedown, mouseup, and click simulation frames targeting elements to handle standard cycles.",
+            code: `// ==UserScript==
+// @name         Infinite Heart Clicker & Auto-Awesome
+// @namespace    http://tampermonkey.net/
+// @version      1.4
+// @description  Continuously clicks the heart icon on the vote page all the time and auto-clicks \"Awesome!\" buttons.
+// @author       Your Name
+// @match        *://gag.gg/vote*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    setTimeout(() => {
+        console.log("Infinite heart clicker and auto-awesome loop started...");
+        
+        setInterval(() => {
+            const awesomeButton = document.querySelector('.swipe-jackpot__btn');
+            if (awesomeButton && awesomeButton.offsetWidth > 0 && awesomeButton.offsetHeight > 0) {
+                triggerClickEvents(awesomeButton);
+                console.log('Cleared popup by clicking Awesome!');
+                return;
+            }
+
+            const targetHeartButton = document.querySelector('.swipe__btn--like');
+            if (targetHeartButton && targetHeartButton.offsetWidth > 0 && targetHeartButton.offsetHeight > 0) {
+                triggerClickEvents(targetHeartButton);
+                console.log('Clicked Heart button');
+            }
+            
+        }, 100);
+    }, 1500);
+
+    function triggerClickEvents(el) {
+        el.click();
+        ['mousedown', 'mouseup', 'click'].forEach(eventType => {
+            el.dispatchEvent(new MouseEvent(eventType, { 
+                bubbles: true, 
+                cancelable: true, 
+                view: window 
+            }));
+        });
+    }
+})();`
+        },
+        {
+            title: "4. Auto Login Engine",
+            desc: "Automates workflow bypass across platform gates. Watches text nodes to navigate security interfaces effortlessly.",
+            code: `// ==UserScript==
+// @name         Auto Login, Access, and Vote (Profile Ignored)
+// @namespace    http://tampermonkey.net/
+// @version      3.1
+// @description  Automatically clicks Login, Continue, and Confirm. Completely ignores Vote on the profile page.
+// @author       Your Name
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    setInterval(() => {
+        const currentUrl = window.location.href;
+
+        if (currentUrl.includes('gag.gg/profile') || currentUrl.includes('gag.gg/vote')) {
+            return; 
+        }
+
+        if (findAndClick('Login')) {
+            console.log('Clicked Login');
+            return; 
+        }
+
+        if (findAndClick('Continue')) {
+            console.log('Clicked Continue');
+            return; 
+        }
+
+        if (findAndClick('Confirm and Give Access')) {
+            console.log('Clicked Confirm and Give Access');
+            return; 
+        }
+
+        const isLoginButtonOnScreen = checkTextPresent('Login');
+        if (!isLoginButtonOnScreen) {
+            if (findAndClick('Vote')) {
+                console.log('No Login button on screen. Redirecting via Vote button.');
+            }
+        }
+
+    }, 500);
+
+    function checkTextPresent(targetText) {
+        const elements = document.querySelectorAll('button, a, input[type=\"button\"], div, span');
+        for (let el of elements) {
+            if (el.textContent.trim() === targetText && el.offsetWidth > 0 && el.offsetHeight > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function findAndClick(targetText) {
+        const elements = document.querySelectorAll('button, a, input[type=\"button\"], div, span');
+        for (let el of elements) {
+            if (el.textContent.trim() === targetText && el.offsetWidth > 0 && el.offsetHeight > 0) {
+                triggerClickEvents(el);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Dispatches events to bypass framework listeners
+    function triggerClickEvents(el) {
+        el.click();
+        ['mousedown', 'mouseup', 'click'].forEach(eventType => {
+            el.dispatchEvent(new MouseEvent(eventType, { 
+                bubbles: true, 
+                cancelable: true, 
+                view: window 
+            }));
+        });
+    }
+})();`
+        },
+        {
+            title: "5. Auto Data Reset",
+            desc: "Identifies max matching caps, routes user targets back to profile menus, and automates account data sweeps to maintain looping state.",
+            code: `// ==UserScript==
+// @name         Gag.gg Auto Delete Data & Redirect
+// @namespace    http://tampermonkey.net/
+// @version      3.1
+// @description  Combines original script logic with automatic text-trigger redirect
+// @author       Your Name
+// @match        https://gag.gg/vote/*
+// @match        https://*.gag.gg/vote/*
+// @match        https://gag.gg/profile/*
+// @match        https://*.gag.gg/profile/*
+// @grant        none
+// @run-at       document-start
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    window.confirm = function() { return true; };
+    const targetUrl = "https://gag.gg/profile/";
+
+    function checkAndNavigate() {
+        const currentUrl = window.location.href;
+
+        if (currentUrl.includes(\"/vote\")) {
+            const pageText = document.body ? (document.body.innerText || \"\") : \"\";
+            if (pageText.includes(\"That’s all for now!\") || pageText.includes(\"That's all for now!\")) {
+                window.location.href = targetUrl;
+            }
+        }
+        else if (currentUrl === targetUrl) {
+            triggerDelete();
+        }
+    }
+
+    function triggerDelete() {
+        const buttons = document.querySelectorAll('button, a, input[type=\"button\"]');
+        for (let button of buttons) {
+            if (button.textContent.trim() === 'Delete my data') {
+                button.click();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const initInterval = setInterval(() => {
+        if (document.body) {
+            clearInterval(initInterval);
+            checkAndNavigate();
+            
+            const observer = new MutationObserver((mutations) => {
+                checkAndNavigate();
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }, 100);
+})();`
+        }
+    ];
+
+    let currentActiveIdx = 0;
+
+    function loadScript(idx, btnElement) {
+        currentActiveIdx = idx;
+        
+        // Handle Active Class Switching
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        // Populate details
+        document.getElementById('scriptTitle').innerText = scriptsDatabase[idx].title;
+        document.getElementById('scriptDesc').innerText = scriptsDatabase[idx].desc;
+        document.getElementById('codeDisplay').innerText = scriptsDatabase[idx].code;
+    }
+
+    function copyCurrentScript() {
+        const textToCopy = scriptsDatabase[currentActiveIdx].code;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const trigger = document.querySelector('.copy-trigger');
+            trigger.innerText = "Copied Payload!";
+            setTimeout(() => {
+                trigger.innerText = "Copy Script Code";
+            }, 1800);
+        });
+    }
+
+    // Initial Load Initialization
+    window.onload = () => {
+        loadScript(0, document.querySelector('.nav-btn'));
+    }
 </script>
+
 </body>
 </html>
